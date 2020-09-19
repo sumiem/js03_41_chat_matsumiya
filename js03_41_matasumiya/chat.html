@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" href="css/style.css">
+
+<title>Chatアプリ</title>
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+<div>
+    <div>名前：<input type="text" id="uname"></div>
+    <div><textarea id="text" cols="30" rows="10"></textarea>
+    <div id="pics">
+        <ul>
+            <li class="imgs" data-img="0"> <img src="imgs/buke.png" width="100px" alt=""></li>
+            <li class="imgs" data-img="1"> <img src="imgs/tuku.jpg" width="100px" alt=""></li>
+            <li class="imgs" data-img="2"> <img src="imgs/caram.png" width="100px" alt=""></li>
+        </ul>
+    </div>       
+    <button id="send">送信</button>
+    </div>
+    <div id="output" style="height: 300px; overflow: auto;border: 1px solid green; margin-top: 30px;">
+        <!-- overflow;auto -->
+    </div>
+</div>
+
+<!--/ コンテンツ表示dd画面 -->
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.20.0/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+//   !!!keyは提出時取り除く
+  var firebaseConfig = {
+ 
+
+
+
+ 
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const ref = firebase.database().ref(); // 重要！ref撮ってくる
+  var date = new Date() ;
+
+  var $scrollAuto = $('#output');
+  $scrollAuto.animate({scrollTop: $scrollAuto[0].scrollHeight}, 'slow');
+
+//function!! 関数定義
+//関数を自分で作る時はfunction 
+// sendって名前つけよう　呪文コマンドを作るイメージ
+function send(){
+    const uname = $("#uname").val();
+    const text  = $("#text").val();
+    //set=決まった名前 push=ユニーク
+    // ↓1行で日本時間表示
+    var time = date.toLocaleString('ja-JP');
+    const msg   = {
+        uname: uname,
+        text: text,
+        time: time,
+        icon: d
+    };
+    ref.push(msg);
+    console.log(msg);
+    var $scrollAuto = $('#output');
+    $scrollAuto.animate({scrollTop: $scrollAuto[0].scrollHeight}, 'slow');
+}
+
+// アイコン処理
+let d = 0;
+const img = ["buke.png","tuku.jpg","caram.png"];
+$(".imgs").on("click",function(){
+    d = $(this).attr("data-img");
+});
+
+
+//moji送信￥￥
+//function　（この中に何を推してるか入れる
+    $("#send").on("click", function(){
+     send();        
+    });
+
+//function　画像をダブルクリックすると送信
+$(".imgs").on("dblclick", function(){
+     send();        
+    });
+
+
+//受信処理
+//"child_added:毎回1個"  value=毎回全てのデータを取得
+//functionで受け取った変数名で.valでv
+ref.on("child_added", function(data){
+    const v = data.val(); // 送信されたオブジェクトを取得
+    const k = data.key; // ユニークキーの取得
+    // const h = '<p>'+v.uname+'<br>'+v.text+'</p>'; //html文字作成
+    // ``で囲むことで行替えをしても崩れない様にしている
+    const h = `
+    <div class="tweet">
+        <div class="user">
+            <img src="imgs/${img[v.icon]}"> 名前：${v.uname}
+        </div>
+        <div class="text"> ${v.text}
+        </div>
+        <div class="time">${v.time}
+        </div>
+    </div>
+    `
+    // const h = '<p>'+v.time+' from:'+v.uname+'<br>'+v.text+'</p><br><img src = "imgs/'+img[v.icon]+'"width="50">'; //html文字作成
+    $('#output').append( h );  //append 下
+});
+
+//イベント情報取得 ここでは変数を名をイベントのeにする//enterキーでも送信できる様にする
+$("#text").on("keydown",function(e){
+    // console.log(e);
+    if(e.keyCode == 13){
+        send();   
+    }
+});
+
+    // 一番下までスクロールする
+//$('#output').animate({scrollTop: $('#output')[0].scrollHeight}, 'fast');
+
+//まとめconsole.logをとにかく使う
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+ul {
+    list-style: none;
+  }
+
+/* header */
+
+/* body */
+li.imgs {
+  display: inline;
+}
+
+textarea#text {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.tweet .user img{
+  width: 50px;
+  border-radius: 50%;  
+}
+
+.tweet {
+  padding: 13px;
+  background: #98ff007a;
+  margin: 10px;
+  border-radius: 10px;
+}
+/* footer */
